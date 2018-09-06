@@ -102,10 +102,77 @@
 						Certains CNI specialise fournissent une integration dans les modeles existant (Nuage, OVS, Calico)
 					</aside>
 					</section>
-
 				</section>
 
 
+				<section>
+					<h3> Need some extra integration </h3>
+					<aside class="notes">
+						Il est necessaire de mettre en place de la glue et de l'integration entre les environnements exterieur specifique et k8s.
+
+						Les possobilites sont trop nombreuses pour etre native a k8s.
+					</aside>
+				</section>
+
+				<section>
+					<p>Cloud Providers world</p>
+					<ul>
+						<li>K8s as a Service</li>
+						<li>CNI driver</li>
+						<li>Services load balancer</li>
+					</ul>
+
+					<aside class="notes">
+						Regarder ce que les gros acteurs font.
+						Dans le cas d'un K8s as a service tout est integre par le cloud provider.
+						Integration d'un CNI driver qui permet de se plug nativement au networking model du provider.
+						Integration d'un ingress load balancer qui profite des services propose de maniere generale par le cloud.
+					</aside>
+				</section>
+
+				<section>
+					<section>
+						<p>On Premise subworld</p>
+						<h5> DiY </h5>
+						<aside class='notes'>
+							Dans le monde maintenant underground du On premise, il faut tout faire soit meme en utilisant les briques les plus malignes possible en fonction de ses besoins.
+						</aside>
+					</section>
+
+					<section>
+						<p>OpenStack, the Clone wars.</p>
+						<ul>
+							<li class="fragment">Neutron LBaaS</li>
+							<li class="fragment">Layer2 networking</li>
+						</ul>
+
+						<aside class="notes">
+							Si on a la "chance" d'avoir une plateforme OpenStack il faut capitaliser sur l'existant.
+
+							Utilisation du service de loadbalancing neutron. avec le plugin k8s dedie cela permet de piloter le LBaaS et allouer des ips de services directement depuis la configuration k8s.
+							Utilisation du layer2 routing et allocation d'un cluster-network qui correspond au private network openstack. Penser a desactiver le network Spoofing.
+						</aside>
+				  </section>
+
+					<section>
+						Self made Load Balancer
+						<ul>
+							<li class="fragment">Time consuming</li>
+							<li class="fragment">Simple load balancer + NodePort</li>
+							<li class="fragment">Dynamic with K8s API</li>
+						</ul>
+
+						<aside class="notes">
+							On peut toujours se faire son propre load balancer. que ce soit en externe du cluster K8s ou en interne.
+							Le resultat optinu dependra du temps investi.
+
+							Le plus simple est d'exporter les services en utilisant la methode du NodePort et configurer le loadbalancer externe pour les utiliser
+							Si besoin de dynamique faire des wrapper en utilisant de l'API k8s.
+
+						</aside>
+				  </section>
+
+				</section>
 
 
 
