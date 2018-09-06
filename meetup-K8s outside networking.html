@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Kubernetes networking and the outside world</title>
+
+		<meta name="description" content="A presentation of Kubernetes networking models for communication with outside world on On Premise setups.">
+		<meta name="author" content="Laurent CORBES <laurent.corbes@enix.fr>">
+
+
+		<link rel="stylesheet" href="reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="reveal.js/css/theme/solarized.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+
+				<section>
+					<h3>Kubernetes networking and the outside world</h3>
+					<h5>Story about how K8s chat with friends.</h5>
+					<p>
+						<small>By Laurent CORBES and  <a href="http://enix.io/">Enix</a> team</small>
+					</p>
+				</section>
+
+
+				<section>
+					Page de presentation ENIX
+				</section>
+
+				<section>
+					<p>Pod to Pod network communication:</p>
+					<ul>
+						<li class="fragment"><a href="https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/">Plugin driven</a></li>
+						<li class="fragment">Multiple providers</li>
+						<li class="fragment">Almost plug and play</li>
+					</ul>
+					<h6 class="fragment">On all setups there is an "easy" solution.</h6>
+
+					<aside class="notes">
+						Le networking model Pod to Pod de kubernetes est maintenant mature, le systeme de plugin permet de facilement implementer ce que l'on veut. quelle que soit le besoin on trouvera une solution. Ca se change tres facilement, ce n'est plus un probleme aujourd'hui.
+					</aside>
+				</section>
+
+				<section>
+					<section>
+					<p>External network communication:</p>
+					<ul>
+						<li class="fragment">External to K8s Services</li>
+						<li class="fragment">Pods to external</li>
+						<li class="fragment">External to Pods (Why not !)</li>
+					</ul>
+
+					<aside class="notes">
+						La communication entre kubernetes et l'exterieur comprend 3 type de communications.
+						La communication vers les services qui tournent dans K8s
+						vers l'externe permet d'aller vers des ressources vers inernet, mais aussi des besoins de DB / services legacy dans des DMZ protege
+					</aside>
+					</section>
+
+					<section>
+					<p>External to Services</p>
+					<ul>
+						<li class="fragment"><a href="https://kubernetes.io/docs/concepts/services-networking/service/">Services driven</a></li>
+						<li class="fragment">ClusterIP</li>
+						<li class="fragment">NodePort</li>
+					</ul>
+
+					<aside class="notes">
+						Mis en place grace au systeme de service.
+						ClusterIP permet de mapper une ip de mon cluster a un service. cool mais ip interne seulement.
+						NodePort permet d'exposer ce service aux ips externe de mon cluster. Cela se comprend dans le monde K8s ou tous les nodes sont la meme chose mais pas suffisant pour la redondance. pb de redondance dns load balancing etc... plusieurs services sur le meme port, ...
+					</aside>
+					</section>
+
+					<section>
+					<p>Pods to External</p>
+					<ul>
+						<li class="fragment">SNAT</li>
+						<li class="fragment">Routing</li>
+						<li class="fragment">CNI integration</li>
+					</ul>
+
+					<aside class="notes">
+						En mode SNAT tout le cluster-ip-network tres simple a mettre en place. mais tres complique de filtrer dans un firewall / DMZ quelle ressource accede a la DB.
+						En mode routage simple, possobilite de filtrage plus fin, mais si routes dynamique maintenance sur les nodes a faire.
+						Certains CNI specialise fournissent une integration dans les modeles existant (Nuage, OVS, Calico)
+					</aside>
+					</section>
+
+				</section>
+
+
+
+
+
+
+			</div>
+		</div>
+
+
+		<script src="reveal.js/lib/js/head.min.js"></script>
+		<script src="reveal.js/js/reveal.js"></script>
+
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'reveal.js/plugin/markdown/marked.js' },
+					{ src: 'reveal.js/plugin/markdown/markdown.js' },
+					{ src: 'reveal.js/plugin/notes/notes.js', async: true },
+					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
