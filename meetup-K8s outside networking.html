@@ -118,7 +118,7 @@
 				</section>
 
 				<section>
-					<p>Cloud Providers world</p>
+					<h4>Cloud Providers world</h4>
 					<ul>
 						<li>K8s as a Service</li>
 						<li>CNI driver</li>
@@ -184,13 +184,78 @@
 
 					<section>
 						<h5>Kube-Router</h5>
-						Old pipes give sweetest smoke
+						<p>
+							Old pipes give sweetest smoke
+						</p>
+						<ul>
+							<li class="fragment"><a href="https://kube-router.io/">https://kube-router.io/</a></li>
+							<li class="fragment">BGP routing</li>
+							<li class="fragment">IPVS loadbalancer</li>
+						</ul>
 
+						<aside class="notes">
+							C'est avec les vieilles casseroles que l'on fait la meilleure soupe.
+							C'est une combinaison des technologies BGP et ipvs. Ce ne sont pas des gros mots :)
+							BGP fait fonctionner internet depuis 20ans de maniere plutot fiable et robuste. Fonctionne sur le principe des AS qui annonce ses IPS et permet de communiquer aux autres routeurs ses IPs et celle que l'on sait router.
+							IPVS quand a lui est utilise dans les load balancers linux
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h4>Kube-Router in details</h4>
+						<aside class="notes">
+							Comme on peut s'en douter Kube-Router est notre choix de predilection.
+						</aside>
+					</section>
+					<section>
+						<h5>Pod to Pod networking</h5>
+						<ul>
+							<li class="fragment">Fully Dynamic</li>
+							<li class="fragment">Fully meshed</li>
+							<li class="fragment">No NAT</li>
+							<li class="fragment">Network Policy</li>
+						</ul>
+						<aside class="notes">
+							Grace a BGP tout le routage interne au cluster est dynamique. Lors d'ajout de nodes le routage est automatiquement propage a tous les autre nodes.
+							Le reseau est completement meshed. Tous les containers et nodes peuvent se parler entre eux sans limitations (par default, possobilite de network policy).
+							Il y a aucun NAT, toutes les connections sont directe et les ips vu partout dans le reseau sont unique a un composant (node, container, service.)
+							Network Policy base sur iptables
+						</aside>
+					</section>
+
+					<section>
+						<h5>Services </h5>
+						<ul>
+							<li class="fragment">Dynamic Loadbalancing</li>
+							<li class="fragment">L4 TCP/UDP</li>
+							<li class="fragment">SDR support</li>
+						</ul>
+						<aside class="notes">
+							Supporte bien evidemment toute la dynamique des Pods par services en utilisant l'API k8s native. plusieurs modes de balancing suppporte (less used, equal, weight)
+							IPVS ne supporte que le niveau 4 en mode TCP ou UDP. Il n'y a pas de niveau 7 http ni SSL
+							Support le Direct Routing. Tres interessant pour les services necessitant beaucoup de bande passante descendante.
+						</aside>
+					</section>
+
+					<section>
+						<h5>BGP advertisement</h5>
+						<ul>
+							<li class="fragment">Any BGP router support</li>
+							<li class="fragment">Cluster network and pod CIDRs</li>
+							<li class="fragment">Services ClusterIP</li>
+						</ul>
+						<aside class="notes">
+							C'est la que ca devient interessant.
+							Supporte de peerer avec n'importe quel router BGP. Peut etre un node linux de routage quagga, zebra, goBGP, bird. un routeur coeur de reseau cisco,juniper,... ou un switch de feuille sur un DC en mode layer 3.
+							Il exporte a ce routeur le routage interne des pods pour chaque node. Cela permet un routage direct entre le coeur de reseau et les nodes donc sans perte de performance. Et permet donc aux pods de se connecter en natif a un element externe au cluster. (legacy DB)
+							Et ca marche pareil avec les ip de service defini par ClusterIP. elle sont elle aussi exporte en tant que /32 et ip anycast par chacun des nodes. Cela permet de faire du load balancing ECMP entre les nodes pour l'acces au service. et ainsi scale naturellement. La seule limite est la capacite ECMP du routeur au dessus du cluster.
+						</aside>
 					</section>
 
 
 				</section>
-
 
 
 
