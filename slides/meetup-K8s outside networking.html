@@ -12,7 +12,7 @@
 
 		<link rel="stylesheet" href="reveal.js/css/reveal.css">
 		<!-- <link rel="stylesheet" href="reveal.js/css/theme/solarized.css"> -->
-		<link rel="stylesheet" href="reveal.js/css/theme/sky.css">
+		<link rel="stylesheet" href="enix.css">
 
 		<!-- Theme used for syntax highlighting of code -->
 		<link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
@@ -35,12 +35,12 @@
 					<h3>Kubernetes networking and the outside world</h3>
 					<h5>a story about how K8S chats with its friends</h5>
 					<p>
-						<small>Laurent CORBES (<a href="http://enix.io/">Enix SAS</a>) (@lcaflc)</small>
+						<small>Laurent CORBES (<a href="http://enix.io/">Enix</a>) (@lcaflc)</small>
 					</p>
 				</section>
 
 
-				<section data-background="enix-domain.svg">
+				<section>
 					<h3>Who's ENIX?</h3>
 					<h5>A team of experts who can help you with:</h5>
 					<small>
@@ -65,16 +65,17 @@
 						</ul>
 					</small>
 					<aside class="notes">
+						<p>
 						(Le but c'est de faire du namedropping rapide,
 						sans forcément insister sur un point ou un autre.)
-
+						</p><p>
 						Peut-être dire un truc du genre "on prend des
 						technologies ont la réputation d'être compliquées,
 						et on vous aide à extraire la partie vraiment utile
 						pour vos projets pour que ça vous fasse gagner
 						du temps et de l'argent"
+						</p>
 					</aside>
-
 				</section>
 
 				<section>
@@ -88,7 +89,7 @@
 				<section>
 					<h3>K8S networking model</h3>
 					<ul>
-						<li>direct communication between components (containers, nodes)</li>
+						<li>direct containers and nodes communication </li>
 						<li>Containers see their own IP</li>
 						<li>IP per Pod</li>
 						<li>Cluster network</li>
@@ -142,9 +143,9 @@
 					</ul>
 
 					<aside class="notes">
-						La communication entre kubernetes et l'exterieur comprend 3 type de communications.
-						La communication vers les services qui tournent dans K8s
-						vers l'externe permet d'aller vers des ressources vers inernet, mais aussi des besoins de DB / services legacy dans des DMZ protege
+						La communication entre kubernetes et l'exterieur comprend 2 type de communications.
+						La communication vers les services qui tournent dans K8s.
+						vers l'externe permet d'aller vers des ressources vers internet, mais aussi des besoins de DB / services legacy dans des DMZ protege
 					</aside>
 					</section>
 
@@ -154,6 +155,7 @@
 						<li class="fragment"><a href="https://kubernetes.io/docs/concepts/services-networking/service/">Services driven</a></li>
 						<li class="fragment">ClusterIP</li>
 						<li class="fragment">NodePort</li>
+						<li class="fragment">LoadBalancer</li>
 					</ul>
 
 					<aside class="notes">
@@ -361,9 +363,11 @@
 			// - https://github.com/hakimel/reveal.js#configuration
 			// - https://github.com/hakimel/reveal.js#dependencies
 			Reveal.initialize({
+				// slideNumber: true,
+				defaultTiming: 120,
 				dependencies: [
-					{ src: 'reveal.js/plugin/markdown/marked.js' },
-					{ src: 'reveal.js/plugin/markdown/markdown.js' },
+					// { src: 'reveal.js/plugin/markdown/marked.js' },
+					// { src: 'reveal.js/plugin/markdown/markdown.js' },
 					{ src: 'reveal.js/plugin/notes/notes.js', async: true },
 					{ src: 'reveal.js/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
 				]
