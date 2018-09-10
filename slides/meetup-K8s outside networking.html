@@ -65,25 +65,27 @@
 						</ul>
 					</small>
 					<aside class="notes">
-						<p>
 						(Le but c'est de faire du namedropping rapide,
 						sans forcément insister sur un point ou un autre.)
-						</p><p>
+						<br/>
 						Peut-être dire un truc du genre "on prend des
 						technologies ont la réputation d'être compliquées,
 						et on vous aide à extraire la partie vraiment utile
 						pour vos projets pour que ça vous fasse gagner
 						du temps et de l'argent"
-						</p>
 					</aside>
 				</section>
 
 				<section>
 					<h3>Outline</h3>
 					<ul>
-						<li>FIXME</li>
+						<li>K8S networking model</li>
+						<li>Super Glue</li>
+						<li>Kube-Router</li>
 					</ul>
-
+					<aside class="notes">
+						Presenation des sections
+					</aside>
 				</section>
 
 				<section>
@@ -106,7 +108,7 @@
 
 				<section>
 					<section>
-						<p>Pod to Pod network communication:</p>
+						<h5>Pod to Pod network communication:</h5>
 						<ul>
 							<li class="fragment"><a href="https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/">Plugin driven</a></li>
 							<li class="fragment">Multiple providers</li>
@@ -117,7 +119,7 @@
 						</aside>
 					</section>
 					<section>
-						<h6>On all setups there is an "easy" solution.</h6>
+						<p>On all setups there is an <em>"easy"</em> solution.</p>
 						<ul>
 							<li class="fragment"><a href="https://www.weave.works/oss/net/">Weave Net</a></li>
 							<li class="fragment"><a href="https://github.com/coreos/flannel#flannel">Flannel</a></li>
@@ -135,7 +137,7 @@
 
 				<section>
 					<section>
-					<p>External network communication:</p>
+					<h5>External network communication:</h5>
 					<ul>
 						<li class="fragment">Inbound: External to K8s Services</li>
 						<li class="fragment">Outbound: Pods to external</li>
@@ -150,7 +152,7 @@
 					</section>
 
 					<section>
-					<p>External to Services</p>
+					<p>Inbound</p>
 					<ul>
 						<li class="fragment"><a href="https://kubernetes.io/docs/concepts/services-networking/service/">Services driven</a></li>
 						<li class="fragment">ClusterIP</li>
@@ -166,7 +168,7 @@
 					</section>
 
 					<section>
-					<p>Pods to External</p>
+					<p>Outbound</p>
 					<ul>
 						<li class="fragment">SNAT</li>
 						<li class="fragment">Routing</li>
@@ -186,7 +188,9 @@
 					<p>
 						Standard modules not sufficient
 					</p>
-					<h3> Need some extra integration </h3>
+					<p><strong>
+						Need some extra integration
+					</strong>	</p>
 					<aside class="notes">
 						Il est necessaire de mettre en place de la glue et de l'integration entre les environnements exterieur specifique et k8s.
 
@@ -195,7 +199,11 @@
 				</section>
 
 				<section>
-					<h4>Cloud Providers world</h4>
+					<h3>Super Glue</h3>
+				</section>
+
+				<section>
+					<h5>Cloud Providers world</h5>
 					<ul>
 						<li>K8s as a Service</li>
 						<li>CNI driver</li>
@@ -212,7 +220,7 @@
 
 				<section>
 					<section>
-						<h4>On Premise subworld</h4>
+						<h5>On Premise subworld</h5>
 						<p>DiY</p>
 						<aside class='notes'>
 							Dans le monde maintenant underground du On premise, il faut tout faire soit meme en utilisant les briques les plus malignes possible en fonction de ses besoins.
@@ -220,10 +228,10 @@
 					</section>
 
 					<section>
-						<h5>OpenStack</h5>
-						<p>
+						<p>OpenStack</p>
+						<p><small>
 							The Clone Wars
-						</p>
+						</small></p>
 						<ul>
 							<li class="fragment"><a href="https://docs.openstack.org/kuryr-kubernetes/latest/readme.html#project-description">kuryr-kubernetes</a></li>
 							<li class="fragment">Neutron LBaaS</li>
@@ -239,10 +247,10 @@
 				  </section>
 
 					<section>
-						<h5>Self made Load Balancer</h5>
-						<p>
+						<p>Self made Load Balancer</p>
+						<p><small>
 							No Pain, No Gain
-						</p>
+						</small></p>
 						<ul>
 							<li class="fragment">Time consuming</li>
 							<li class="fragment">Simple load balancer + NodePort</li>
@@ -260,10 +268,10 @@
 				  </section>
 
 					<section>
-						<h5>Kube-Router</h5>
-						<p>
+						<p>Kube-Router</p>
+						<p><small>
 							Old pipes give sweetest smoke
-						</p>
+						</small></p>
 						<ul>
 							<li class="fragment"><a href="https://kube-router.io/">https://kube-router.io/</a></li>
 							<li class="fragment">BGP routing</li>
@@ -280,12 +288,12 @@
 				</section>
 
 				<section>
-					<section>
-						<h4>Kube-Router in details</h4>
-						<aside class="notes">
-							Comme on peut s'en douter Kube-Router est notre choix de predilection.
-						</aside>
-					</section>
+					<h3>Kube-Router</h3>
+					<aside class="notes">
+						Comme on peut s'en douter Kube-Router est notre choix de predilection.
+					</aside>
+				</section>
+				<section>
 					<section>
 						<h5>Pod to Pod networking</h5>
 						<ul>
@@ -301,6 +309,9 @@
 							Network Policy base sur iptables
 						</aside>
 					</section>
+					<section>
+						FIXME schema BGP inside networking
+					</section>
 
 					<section>
 						<h5>Services </h5>
@@ -314,6 +325,9 @@
 							IPVS ne supporte que le niveau 4 en mode TCP ou UDP. Il n'y a pas de niveau 7 http ni SSL
 							Support le Direct Routing. Tres interessant pour les services necessitant beaucoup de bande passante descendante.
 						</aside>
+					</section>
+					<section>
+						FIXME schema LoadBalancer
 					</section>
 
 					<section>
@@ -330,7 +344,9 @@
 							Et ca marche pareil avec les ip de service defini par ClusterIP. elle sont elle aussi exporte en tant que /32 et ip anycast par chacun des nodes. Cela permet de faire du load balancing ECMP entre les nodes pour l'acces au service. et ainsi scale naturellement. La seule limite est la capacite ECMP du routeur au dessus du cluster.
 						</aside>
 					</section>
-
+					<section>
+						FIXME schema External Router
+					</section>
 
 				</section>
 
@@ -344,9 +360,10 @@
 						17/18 et 20/21 septembre 2018 à Paris
 					</p>
 					<p>
-						<a href="https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/">https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/</a>. Contact: <a href="mailto:formation@enix.fr">formation@enix.fr</a>
+						<a href="https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/">https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/</a>
+						<br />
+						Contact: <a href="mailto:formation@enix.fr">formation@enix.fr</a>
 					</p>
-
 					</small>
 				</section>
 
