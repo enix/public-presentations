@@ -34,7 +34,7 @@
 					<h3>Kubernetes networking and the outside world</h3>
 					<h5>a story about how K8S chats with its friends</h5>
 					<p>
-						<small>Laurent CORBES (<a href="http://enix.io/">Enix SAS</a>)</small>
+						<small>Laurent CORBES (<a href="http://enix.io/">Enix SAS</a>) (@lcaflc)</small>
 					</p>
 				</section>
 
@@ -85,17 +85,52 @@
 				</section>
 
 				<section>
+					<h3>K8S networking model</h3>
+					<ul>
+						<li>direct communication between components (containers, nodes)</li>
+						<li>Containers see their own IP</li>
+						<li>IP per Pod</li>
+						<li>Cluster network</li>
+					</ul>
+
+					<aside class="notes">
+						K8s force a ce que tous les elements d'un cluster puissent communiquer a plat (directement dans le sens bidirectionnel sans NAT ou proxy qui change l'ip visible d'un des 2).
+						Un container a une IP unique qui lui est attache et qu'il utilise lui meme. (ifconfig dans le container donne son ip que tout le monde voit)
+						L'unite atomique de k8s etant le pod. en fait tous les containers d'un POD sont lie par cette IP unique. Ils doivent donc se partager les ports disponible. tous peuvent se parler en localhost. Cela mimic le fonctionnement d'une VM.
+						La plupart des implementations necessite de dedier un IP range. Celui ci est gere (decoupe, alloue, IPAM) par le network plugin.
+					</aside>
+				</section>
+
+
+				<section>
+					<section>
+
 					<p>Pod to Pod network communication:</p>
 					<ul>
 						<li class="fragment"><a href="https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/">Plugin driven</a></li>
 						<li class="fragment">Multiple providers</li>
 						<li class="fragment">Almost plug and play</li>
 					</ul>
-					<h6 class="fragment">On all setups there is an "easy" solution.</h6>
-
 					<aside class="notes">
 						Le networking model Pod to Pod de kubernetes est maintenant mature, le systeme de plugin permet de facilement implementer ce que l'on veut. quelle que soit le besoin on trouvera une solution. Ca se change tres facilement, ce n'est plus un probleme aujourd'hui.
 					</aside>
+
+					<section>
+						<h6>On all setups there is an "easy" solution.</h6>
+						<ul>
+							<li class="fragment"><a href="https://www.weave.works/oss/net/">Weave Net</a></li>
+							<li class="fragment"><a href="https://github.com/coreos/flannel#flannel">Flannel</a></li>
+							<li class="fragment"><a href="https://docs.projectcalico.org/v3.2/introduction/">Calico</a></li>
+						</ul>
+
+						<aside class="notes">
+							Weave Net: comme CNI ou stand alone. simple et fonctionne partout car base sur l'encapsulation du reseau entre tous les nodes.
+							Flannel: Routage simple entre les nodes. tunnel VXlan, static routes. decoupe le CIDR en subnetworks associe a chaque node.
+							Calico: CNI Highly scalable, sans encapsulation BGP, ou avec un overlay IP-IP. Network policies
+						</aside>
+					</section>
+				</section>
+
 				</section>
 
 				<section>
