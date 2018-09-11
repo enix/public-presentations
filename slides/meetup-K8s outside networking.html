@@ -45,22 +45,22 @@
 					<h5>A team of experts who can help you with:</h5>
 					<small>
 						<ul>
-							<li>Hosting
+							<li>
+								Container Orchestration
 								<br/>
-							    (let's Terraform your OpenStack)
+								(consulting, training, managed Kubernetes hosting)
+							</li>
+							<li>Network
+								<br/>
+								(our teams have built CDNs and dark fiber networks)
 							</li>
 							<li>Virtualization
 								<br/>
 								(we were already selling Xen VMs in 2005)
 							</li>
-							<li>Network
-							    <br/>
-							    (our teams have built CDNs and dark fiber networks)
-							</li>
-							<li>
-								Containers
+							<li>Hosting
 								<br/>
-								(consulting, training, managed Kubernetes hosting)
+							    (let's Terraform your OpenStack)
 							</li>
 						</ul>
 					</small>
@@ -259,7 +259,7 @@
 							The Clone Wars
 						</small></p>
 						<ul>
-							<li class="fragment"><a href="https://docs.openstack.org/kuryr-kubernetes/latest/readme.html#project-description">kuryr-kubernetes</a></li>
+							<li class="fragment">Integration standard</li>
 							<li class="fragment">Neutron LBaaS</li>
 							<li class="fragment">Layer2 networking</li>
 						</ul>
@@ -267,7 +267,7 @@
 						<aside class="notes">
 							Si on a la "chance" d'avoir une plateforme OpenStack il faut capitaliser sur l'existant.
 							<br/>
-							Utilisation du service de loadbalancing neutron. avec le plugin k8s dedie cela permet de piloter le LBaaS et allouer des ips de services directement depuis la configuration k8s.
+							Utilisation du service de loadbalancing neutron. avec le plugin k8s dedie cela permet de piloter le LBaaS et allouer des ips de services directement depuis la configuration k8s. Permet de profiter de la couche d'abstraction des couches openstack pour systemes externe.
 							<br/>
 							Utilisation du layer2 routing et allocation d'un cluster-network qui correspond au private network openstack.
 						</aside>
@@ -282,6 +282,7 @@
 							<li class="fragment">Time consuming</li>
 							<li class="fragment">Simple load balancer + NodePort</li>
 							<li class="fragment">Dynamic with K8s API</li>
+							<li class="fragment">Ingress Controller</li>
 						</ul>
 
 						<aside class="notes">
@@ -292,6 +293,8 @@
 							Le plus simple est d'exporter les services en utilisant la methode du NodePort et configurer le loadbalancer externe pour les utiliser
 							<br/>
 							Si besoin de dynamique faire des wrapper en utilisant de l'API k8s.
+							<br />
+							possobilite d'utiliser un ingress Controller. qui fourni une configuration pour des loadbalancer type nginx / traefik. mais http only
 						</aside>
 				  </section>
 
@@ -359,7 +362,7 @@
 							<br/>
 							IPVS ne supporte que le niveau 4 en mode TCP ou UDP. Il n'y a pas de niveau 7 http ni SSL
 							<br/>
-							Support le Direct Routing. Tres interessant pour les services necessitant beaucoup de bande passante descendante. Quand j'ai un serveur qui envoie un flux video, le flux est envoye directement au client sans repasser par le load balancer.
+							Support le Direct Server Return. Tres interessant pour les services necessitant beaucoup de bande passante descendante. Quand j'ai un serveur qui envoie un flux video, le flux est envoye directement au client sans repasser par le load balancer.
 						</aside>
 					</section>
 					<section>
@@ -371,7 +374,7 @@
 						<ul>
 							<li class="fragment">Any BGP router support</li>
 							<li class="fragment">Cluster network and pod CIDRs</li>
-							<li class="fragment">Services ClusterIP</li>
+							<li class="fragment">Services ClusterIP / External IP</li>
 							<li class="fragment">ECMP</li>
 						</ul>
 						<aside class="notes">
@@ -418,7 +421,7 @@
 					<p>
 						<a href="https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/">https://enix.io/fr/services/formation/deployer-ses-applications-avec-kubernetes/</a>
 						<br />
-						Contact: <a href="mailto:formation@enix.fr">formation@enix.fr</a>
+						Contact: <a href="mailto:formation@enix.fr">formation@enix.io</a>
 					</p>
 					</small>
 					<aside class="notes">
