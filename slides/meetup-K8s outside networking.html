@@ -80,7 +80,7 @@
 					<h3>Outline</h3>
 					<ul>
 						<li>K8S networking model</li>
-						<li>Super Glue</li>
+						<li>Custom Integration</li>
 						<li>Kube-Router</li>
 					</ul>
 					<aside class="notes">
@@ -134,11 +134,11 @@
 						<aside class="notes">
 							quelle que soit le besoin on trouvera une solution. Ca se change tres facilement, ce n'est plus un probleme aujourd'hui.
 							<br/>
-							Weave Net: comme CNI ou stand alone. simple et fonctionne partout car base sur l'encapsulation du reseau entre tous les nodes.
+							Weave Net: simple et fonctionne partout car base sur l'encapsulation du reseau entre tous les nodes.
 							<br/>
-							Flannel: Routage simple entre les nodes. tunnel VXlan, static routes. decoupe le CIDR en subnetworks associe a chaque node.
+							Flannel: Routage simple entre les nodes. decoupe le CIDR en subnetworks associe a chaque node.
 							<br/>
-							Calico: CNI Highly scalable, sans encapsulation BGP, ou avec un overlay IP-IP. Network policies
+							Calico: Highly scalable, BGP, Network policies. les network policy permettent de filtrer le traffic entre les pods, Certains l'implement et d'autre non.
 						</aside>
 					</section>
 				</section>
@@ -159,6 +159,8 @@
 						La communication vers les services qui tournent dans K8s.
 						<br/>
 						vers l'externe permet d'aller vers des ressources vers internet, mais aussi des besoins de DB / services legacy dans des DMZ protege
+						<br />
+						external to pods vous considerez que ce n'est pas possible a cause de la frontiere mise en place en general. mais c'est tout a fait possible.
 					</aside>
 					</section>
 
@@ -175,7 +177,7 @@
 						<br/>
 						ClusterIP permet de mapper une ip de mon cluster a un service. cool mais ip interne seulement.
 						<br/>
-						NodePort permet d'exposer ce service aux ips externe de mon cluster. Cela se comprend dans le monde K8s ou tous les nodes sont la meme chose mais pas suffisant pour la redondance. pb de redondance dns load balancing etc... plusieurs services sur le meme port, ...
+						NodePort permet d'exposer ce service aux ips externe de mon cluster. Cela se comprend dans le monde K8s ou tous les nodes
 					</aside>
 					</section>
 
@@ -206,6 +208,11 @@
 						Need some extra integration
 					</strong>	</p>
 					<aside class="notes">
+						Traffic directement sur le les nodes problemes:
+						plusieurs services que je veux avoir sur le meme port standard pas possible.
+						redondance ? dns ?
+						port 22 deja pris sur les nodes par ex.
+						<br />
 						Il est necessaire de mettre en place de la glue et de l'integration entre les environnements exterieur specifique et k8s.
 						<br/>
 						Les possobilites sont trop nombreuses pour etre native a k8s.
@@ -231,7 +238,7 @@
 						<br/>
 						Integration d'un CNI driver qui permet de se plug nativement au networking model du provider.
 						<br/>
-						Integration d'un ingress load balancer qui profite des services propose de maniere generale par le cloud.
+						Creation d'un ingress service de type LoadBalancer. je cree le service et quelques minutes plutart magiquement j'ai mon service qui est expose sur internet.
 					</aside>
 				</section>
 
@@ -260,7 +267,7 @@
 							<br/>
 							Utilisation du service de loadbalancing neutron. avec le plugin k8s dedie cela permet de piloter le LBaaS et allouer des ips de services directement depuis la configuration k8s.
 							<br/>
-							Utilisation du layer2 routing et allocation d'un cluster-network qui correspond au private network openstack. Penser a desactiver le network Spoofing.
+							Utilisation du layer2 routing et allocation d'un cluster-network qui correspond au private network openstack.
 						</aside>
 				  </section>
 
@@ -302,7 +309,7 @@
 							<br/>
 							C'est une combinaison des technologies BGP et ipvs. Ce ne sont pas des gros mots :)
 							<br/>
-							BGP fait fonctionner internet depuis 20ans de maniere plutot fiable et robuste. Fonctionne sur le principe des AS qui annonce ses IPS et permet de communiquer aux autres routeurs ses IPs et celle que l'on sait router.
+							BGP c'est le protocole de routage qui fait fonctionner internet depuis quelques dizaines d'annees. Et utiliser BGP c'est profiter des capacites des routeurs existant et archi reseau actuelle.
 							<br/>
 							IPVS quand a lui est utilise dans les load balancers linux
 						</aside>
@@ -327,9 +334,9 @@
 						<aside class="notes">
 							Grace a BGP tout le routage interne au cluster est dynamique. Lors d'ajout de nodes le routage est automatiquement propage a tous les autre nodes.
 							<br/>
-							Le reseau est completement meshed. Tous les containers et nodes peuvent se parler entre eux sans limitations (par default, possobilite de network policy).
+							Le reseau est completement meshed. Tous les containers et nodes peuvent se parler entre eux sans limitations et en un seul hop.
 							<br/>
-							Il y a aucun NAT, toutes les connections sont directe et les ips vu partout dans le reseau sont unique a un composant (node, container, service.)
+							Il y a aucun NAT, toutes les connections sont directe et les ips vu partout dans le reseau sont unique a un composant (node, container, service.) On casse donc la frontiere entre le cluster kubernetes et le reste du monde. On integre le cluster a notre reseau existant.
 							<br/>
 							Network Policy base sur iptables
 						</aside>
@@ -343,14 +350,14 @@
 						<ul>
 							<li class="fragment">Dynamic Loadbalancing</li>
 							<li class="fragment">L4 TCP/UDP</li>
-							<li class="fragment">SDR support</li>
+							<li class="fragment">DSR support</li>
 						</ul>
 						<aside class="notes">
 							Supporte bien evidemment toute la dynamique des Pods par services en utilisant l'API k8s native. plusieurs modes de balancing suppporte (less used, equal, weight)
 							<br/>
 							IPVS ne supporte que le niveau 4 en mode TCP ou UDP. Il n'y a pas de niveau 7 http ni SSL
 							<br/>
-							Support le Direct Routing. Tres interessant pour les services necessitant beaucoup de bande passante descendante.
+							Support le Direct Routing. Tres interessant pour les services necessitant beaucoup de bande passante descendante. Quand j'ai un serveur qui envoie un flux video, le flux est envoye directement au client sans repasser par le load balancer.
 						</aside>
 					</section>
 					<section>
@@ -363,6 +370,7 @@
 							<li class="fragment">Any BGP router support</li>
 							<li class="fragment">Cluster network and pod CIDRs</li>
 							<li class="fragment">Services ClusterIP</li>
+							<li class="fragment">ECMP</li>
 						</ul>
 						<aside class="notes">
 							C'est la que ca devient interessant.
@@ -371,7 +379,9 @@
 							<br/>
 							Il exporte a ce routeur le routage interne des pods pour chaque node. Cela permet un routage direct entre le coeur de reseau et les nodes donc sans perte de performance. Et permet donc aux pods de se connecter en natif a un element externe au cluster. (legacy DB)
 							<br/>
-							Et ca marche pareil avec les ip de service defini par ClusterIP. elle sont elle aussi exporte en tant que /32 et ip anycast par chacun des nodes. Cela permet de faire du load balancing ECMP entre les nodes pour l'acces au service. et ainsi scale naturellement. La seule limite est la capacite ECMP du routeur au dessus du cluster.
+							Et ca marche pareil avec les ip de service defini par ClusterIP. elle sont elle aussi exporte en tant que /32 et ip anycast par chacun des nodes.
+							<br/>
+							Cela permet de faire du load balancing ECMP entre les nodes pour l'acces au service. et ainsi scale naturellement. La seule limite est la capacite ECMP du routeur au dessus du cluster.
 						</aside>
 					</section>
 					<section>
@@ -380,6 +390,20 @@
 
 				</section>
 
+				<section>
+					<h3>This is the End</h3>
+					<ul>
+						<li>On cloud is easy</li>
+						<li>But on prem is possible</li>
+					</ul>
+					<aside class="notes">
+						Faire du K8S chez les cloud providers. c'est facile, mais opaque. c'est une blackbox sur le fonctionnement et au sens reseau on ne vois rien de l'exterieur
+						<br />
+						On premise il y a du boulot en plus. mais c'est faisable. grace aux projets kube-Router et un peu de graisse de coude on arrive a integrer un cluster Kubernetes de maniere transparente dans un SI existant.
+						<br />
+						On est pas oblige d'aller chez les cloud providers.
+					</aside>
+				</section>
 
 				<section>
 					<h3>Formation Kubernetes</h3>
@@ -395,6 +419,11 @@
 						Contact: <a href="mailto:formation@enix.fr">formation@enix.fr</a>
 					</p>
 					</small>
+					<aside class="notes">
+						Si vous voulez comprendre en detail comment tout cela fonctionne venez a notre formation
+						<br />
+						La premiere session est pleine mais il reste quelques places pour la deuxieme.
+					</aside>
 				</section>
 
 			</div>
