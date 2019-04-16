@@ -1,0 +1,13 @@
+version: '3.4'
+services:
+  www:
+    image: ${IMAGE_TAG:-meetup-k8s-outside-networking}
+    build:
+      context: .
+      target: develop
+    ports:
+    - 8000:8000
+    restart: always
+    volumes:
+    - "./www/index.html:/reveal.js/index.html"
+    - "./www/enix.css:/reveal.js/enix.css"

@@ -1,13 +1,7 @@
-FROM node:8
+FROM enix/revealjs:1 as develop
 
-EXPOSE 8000
+COPY www/ ./
 
-ENV NPM_CONFIG_LOGLEVEL info
-WORKDIR /home/node/app/
+FROM nginx
 
-COPY reveal.js /home/node/app/
-RUN npm install
-RUN ln -s . reveal.js
-COPY slides/ slides/
-
-CMD npm start
+COPY --from=develop /reveal.js /usr/share/nginx/html
