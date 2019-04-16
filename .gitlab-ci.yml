@@ -16,7 +16,7 @@ build:
     - docker build --tag $IMAGE_TAG .
     - docker push $IMAGE_TAG
 
-sementic-release:
+semantic-release:
   stage: release
   image: node:8
   before_script:
