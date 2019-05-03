@@ -18,13 +18,13 @@ build:
 
 semantic-release:
   stage: release
-  image: node:8
-  before_script:
-    - npm install --save-dev semantic-release @semantic-release/gitlab
-  script:
-    - npx semantic-release --ci
+  image: enix/semantic-release:gitlab
+  only:
+    - master
   except:
     - tags
+  script:
+    - semantic-release --ci
 
 deploy-production:
   stage: deploy
