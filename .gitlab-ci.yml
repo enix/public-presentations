@@ -5,6 +5,7 @@ stages:
   - deploy
 
 variables:
+  GIT_SUBMODULE_STRATEGY: normal
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
 
 build:
