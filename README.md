@@ -11,6 +11,9 @@ Publications are made using the [reveal.js](http://revealjs.com) framework.
 The easiest way to build the publications and present them is to build them using docker:
 
 ```
+# retrieve reveal.js submodule
+git submodule init
+git submodule update
 # build the container
 docker build -t publications .
 # run the container
